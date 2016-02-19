@@ -23,9 +23,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 public class MainWindow {
 
@@ -33,11 +36,9 @@ public class MainWindow {
     private JMenuBar mainMenuBar;
     private JMenu menuFile;
 
-    private JMenu menuRight;
-    private JMenu menuLeft;
+    private JButton buttonRight;
+    private JButton buttonLeft;
 
-    private JMenuItem menuSubLeft;
-    private JMenuItem menuSubRight;
     private JMenuItem menuOpen;
     private JMenuItem menuExit;
     private int currentPage;
@@ -79,25 +80,18 @@ public class MainWindow {
     }
 
     private void setupArrows() {
-        menuLeft = new JMenu("");
         ImageIcon leftArrow = new ImageIcon("icons/leftArrow.png");
-        menuLeft.setIcon(leftArrow);
-        menuSubLeft = new JMenuItem("Left"); // may add icons later                
-        menuLeft.setMnemonic(KeyEvent.VK_L);                                    
-        menuSubLeft.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent leftEvent) {
+        buttonLeft = new JButton(leftArrow);
+        buttonLeft.addActionListener(new ActionListener() {
+            @Override                                                           
+            public void actionPerformed(ActionEvent leftEvent) {   
                 System.out.println("menu left pressed...");
                 pressLeft();
             }
         });
-        menuRight = new JMenu("");
         ImageIcon rightArrow = new ImageIcon("icons/rightArrow.png");
-        menuRight.setIcon(rightArrow);
-
-        menuSubRight = new JMenuItem("Right"); // may add icons later                
-        menuRight.setMnemonic(KeyEvent.VK_R);                                    
-        menuSubRight.addActionListener(new ActionListener() {
+        buttonRight = new JButton(rightArrow);
+        buttonRight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent rightEvent) {
                 System.out.println("menu right pressed...");
@@ -204,7 +198,7 @@ public class MainWindow {
     }
 
 
-private File FileNavigator(String option) {                               
+    private File FileNavigator(String option) {                               
         String filename = "";                                                   
         File selectedFile = null;
         JFileChooser fileChooser;                                               
@@ -234,13 +228,10 @@ private File FileNavigator(String option) {
     public void display() {                                                     
         menuFile.add(menuOpen);                                                 
         menuFile.add(menuExit);
-        
-        menuLeft.add(menuSubLeft);
-        menuRight.add(menuSubRight);                                                 
                                                                                 
         mainMenuBar.add(menuFile);                                              
-        mainMenuBar.add(menuLeft);
-        mainMenuBar.add(menuRight);
+        mainMenuBar.add(buttonLeft);
+        mainMenuBar.add(buttonRight);
         mainFrame.setJMenuBar(mainMenuBar);
         
         mainFrame.pack();                                                       
