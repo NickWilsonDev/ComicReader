@@ -27,6 +27,8 @@ import com.github.junrar.rarfile.FileHeader;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+//import javax.swing.
 import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
@@ -39,9 +41,9 @@ public class UnRar {
         ArrayList<File> imageFileList = null;
         File tempDir = null;
 
-    public UnRar(String targetFile) {
+    public UnRar(File targetFile) {
 
-        filename = new File(targetFile);
+        filename = targetFile;
         tempDir = new File("temp");                                        
         Archive a = null;                                                       
                                                                                 
@@ -118,18 +120,10 @@ public class UnRar {
         JPanel panel = null;
         System.out.println("image we are trying for:: " + imageFileList.get(index).toString());
         JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index).toString()));
-        //try {
-          //  image = ImageIO.read(out); //files[0]);
+        panel = new JPanel(new BorderLayout());
+        panel.add(imgLabel, BorderLayout.CENTER);
+        JScrollPane scrollPane=new JScrollPane(panel); 
 
-            //ImageIcon image = new ImageIcon(im);
-            //JLabel label = new JLabel(" hey "); //new ImageIcon(image));
-            panel = new JPanel(new BorderLayout());
-            panel.add(imgLabel, BorderLayout.CENTER);
-
-
-       // } catch(IOException e) {
-       //     System.out.println("ioexception");
-        //}
         return panel;
     }
 

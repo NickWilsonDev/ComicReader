@@ -112,11 +112,11 @@ public class MainWindow {
         menuOpen.addActionListener(new ActionListener() {                       
             @Override                                                           
             public void actionPerformed(ActionEvent saveEvent) {                
-                String targetFile = null;
+                File targetFile = null;
                 targetFile = FileNavigator("Open");                       
 
                 if (targetFile != null) {
-                    System.out.println("Filename:: " + targetFile);
+                    System.out.println("Filename:: " + targetFile.getName());
                     // if zip if rar file
                     comic = new UnRar(targetFile);
                     mainFrame.invalidate();
@@ -192,22 +192,32 @@ public class MainWindow {
     }
 
 
-private String FileNavigator(String option) {                               
+private File FileNavigator(String option) {                               
         String filename = "";                                                   
+        File selectedFile = null;
         JFileChooser fileChooser;                                               
         fileChooser = new JFileChooser();                                       
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);   
         if (option.equals("Open")) {                                            
             int returnCode = fileChooser.showOpenDialog(null);                  
             if (returnCode == JFileChooser.APPROVE_OPTION) {                    
-                File selectedFile = fileChooser.getSelectedFile();              
-                filename = selectedFile.getName();                              
-                System.out.println("FileNavigator method " + filename);                                   
+                selectedFile = fileChooser.getSelectedFile();              
+                filename = selectedFile.getName();  
+                System.out.println("isFile():: " + selectedFile.isFile());
+                System.out.println("File Absolute path:: " + selectedFile.getAbsolutePath());
+                try {
+                    System.out.println("File canonical path:: " + selectedFile.getCanonicalPath());
+                } catch (IOException io) {
+                    System.out.println("IOException in FileNavigator method");
+                }
+                System.out.println("File Path:: " + selectedFile.getPath());                            
+                System.out.println("FileNavigator selected filename: " + filename);                                   
             }                                                                   
         } else {                                                                
             fileChooser.showDialog(null, "Save");                               
         }                                                                       
-        return filename;                                                        
+        //return filename;
+        return selectedFile;                                                      
     }                                                                           
                                                                                 
     public void display() {                                                     
