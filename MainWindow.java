@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -43,6 +44,7 @@ public class MainWindow {
     private JMenuItem menuExit;
     private int currentPage;
 
+    protected JScrollPane scrollPane;
     protected JPanel comicPanel = null;
     protected UnRar comic;
 /** keyEvent codes for future use left-right = forward back pages
@@ -143,8 +145,9 @@ public class MainWindow {
                 currentPage = currentPage;
             }
             comicPanel = comic.getImagePanel(currentPage);
+            scrollPane = new JScrollPane(comicPanel);
             mainFrame.getContentPane().removeAll();
-            mainFrame.getContentPane().add(comicPanel);
+            mainFrame.getContentPane().add(scrollPane); //comicPanel);
             mainFrame.validate();
             
         } else {
@@ -159,8 +162,9 @@ public class MainWindow {
             } else {
                 currentPage--;
                 comicPanel = comic.getImagePanel(currentPage);
+                scrollPane = new JScrollPane(comicPanel);
                 mainFrame.getContentPane().removeAll();
-                mainFrame.getContentPane().add(comicPanel);
+                mainFrame.getContentPane().add(scrollPane); //comicPanel);
                 mainFrame.validate();
             }
         } else {

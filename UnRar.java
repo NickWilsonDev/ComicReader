@@ -27,7 +27,7 @@ import com.github.junrar.rarfile.FileHeader;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
+//import javax.swing.JScrollPane;
 //import javax.swing.
 import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
@@ -122,7 +122,7 @@ public class UnRar {
         JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index).toString()));
         panel = new JPanel(new BorderLayout());
         panel.add(imgLabel, BorderLayout.CENTER);
-        JScrollPane scrollPane=new JScrollPane(panel); 
+        //JScrollPane scrollPane=new JScrollPane(panel); 
 
         return panel;
     }
