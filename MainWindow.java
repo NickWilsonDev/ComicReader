@@ -19,6 +19,7 @@ import java.nio.file.DirectoryNotEmptyException;
 
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -35,6 +36,8 @@ public class MainWindow {
     private JMenu menuRight;
     private JMenu menuLeft;
 
+    private JMenuItem menuSubLeft;
+    private JMenuItem menuSubRight;
     private JMenuItem menuOpen;
     private JMenuItem menuExit;
     private int currentPage;
@@ -62,9 +65,6 @@ public class MainWindow {
         JPanel comicPanel = new JPanel();
         mainFrame = new JFrame("ComicReader");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
-        
-        //mainFrame.addKeyListener(new MyKeyListener());
         
         // setup menu
         mainMenuBar = new JMenuBar();
@@ -76,22 +76,31 @@ public class MainWindow {
         setupOpen();
         setupExit();
         setupArrows();
-       // setupLeft();
-       // setupRight();
     }
 
     private void setupArrows() {
-        menuLeft = new JMenu("Left");
-        menuLeft.addActionListener(new ActionListener() {
+        menuLeft = new JMenu("");
+        ImageIcon leftArrow = new ImageIcon("icons/leftArrow.png");
+        menuLeft.setIcon(leftArrow);
+        menuSubLeft = new JMenuItem("Left"); // may add icons later                
+        menuLeft.setMnemonic(KeyEvent.VK_L);                                    
+        menuSubLeft.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent leftEvent) {
+                System.out.println("menu left pressed...");
                 pressLeft();
             }
         });
-        menuRight = new JMenu("Right");
-        menuRight.addActionListener(new ActionListener() {
+        menuRight = new JMenu("");
+        ImageIcon rightArrow = new ImageIcon("icons/rightArrow.png");
+        menuRight.setIcon(rightArrow);
+
+        menuSubRight = new JMenuItem("Right"); // may add icons later                
+        menuRight.setMnemonic(KeyEvent.VK_R);                                    
+        menuSubRight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent rightEvent) {
+                System.out.println("menu right pressed...");
                 pressRight();
             }
         });
@@ -104,7 +113,7 @@ public class MainWindow {
                     pressRight();
                 }
             }
-        });
+        }); 
     }
     private void setupOpen() {                                                  
         menuOpen = new JMenuItem("Open"); // may add icons later                
@@ -120,8 +129,8 @@ public class MainWindow {
                     // if zip if rar file
                     comic = new UnRar(targetFile);
                     mainFrame.invalidate();
-                    comicPanel = comic.getImagePanel(1);
-                    currentPage = 1;
+                    comicPanel = comic.getImagePanel(0);
+                    currentPage = 0;
                     mainFrame.getContentPane().removeAll();
                     mainFrame.getContentPane().add(comicPanel);
                     mainFrame.validate();
@@ -134,13 +143,16 @@ public class MainWindow {
     
     private void pressRight() {
         if (comic != null) {
-            if (currentPage < comic.getImageList().size()) {
+            if (currentPage < comic.getImageList().size() - 1) {
                 currentPage++;
-                comicPanel = comic.getImagePanel(currentPage);
-                mainFrame.getContentPane().removeAll();
-                mainFrame.getContentPane().add(comicPanel);
-                mainFrame.validate();
+            } else {
+                currentPage = currentPage;
             }
+            comicPanel = comic.getImagePanel(currentPage);
+            mainFrame.getContentPane().removeAll();
+            mainFrame.getContentPane().add(comicPanel);
+            mainFrame.validate();
+            
         } else {
             System.out.println("right key pressed but no comic selected");
         }
@@ -148,8 +160,8 @@ public class MainWindow {
 
     private void pressLeft() {
         if (comic != null) {
-            if (currentPage == 1) {
-                currentPage = 1;
+            if (currentPage == 0) {
+                currentPage = 0;
             } else {
                 currentPage--;
                 comicPanel = comic.getImagePanel(currentPage);
@@ -216,13 +228,15 @@ private File FileNavigator(String option) {
         } else {                                                                
             fileChooser.showDialog(null, "Save");                               
         }                                                                       
-        //return filename;
         return selectedFile;                                                      
     }                                                                           
                                                                                 
     public void display() {                                                     
         menuFile.add(menuOpen);                                                 
-        menuFile.add(menuExit);                                                 
+        menuFile.add(menuExit);
+        
+        menuLeft.add(menuSubLeft);
+        menuRight.add(menuSubRight);                                                 
                                                                                 
         mainMenuBar.add(menuFile);                                              
         mainMenuBar.add(menuLeft);
