@@ -116,15 +116,17 @@ public class UnRar {
     }
 
     public JPanel getImagePanel(int index) {
-        BufferedImage image;
         JPanel panel = null;
         System.out.println("image we are trying for:: " + imageFileList.get(index).toString());
         JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index).toString()));
         panel = new JPanel(new BorderLayout());
         panel.add(imgLabel, BorderLayout.CENTER);
-        //JScrollPane scrollPane=new JScrollPane(panel); 
-
         return panel;
+    }
+
+    public ImageIcon getImage(int index) {
+        ImageIcon image = new ImageIcon(imageFileList.get(index).toString());
+        return image;
     }
 
     public void printImageFilenameList() {

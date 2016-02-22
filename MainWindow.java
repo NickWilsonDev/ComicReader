@@ -5,12 +5,16 @@
  * This class models the main frame or window of the application.
  */
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
-
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.io.File;
 
 
@@ -20,16 +24,21 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.KeyStroke;
 
 public class MainWindow {
 
@@ -39,6 +48,8 @@ public class MainWindow {
 
     private JButton buttonRight;
     private JButton buttonLeft;
+    private JButton zoomInButton;
+    private JButton zoomOutButton;
 
     private JMenuItem menuOpen;
     private JMenuItem menuExit;
@@ -47,17 +58,8 @@ public class MainWindow {
     protected JScrollPane scrollPane;
     protected JPanel comicPanel = null;
     protected UnRar comic;
-/** keyEvent codes for future use left-right = forward back pages
- * up-down = zoom in or out
- * VK_UP
- * VK_DOWN
- * VK_LEFT
- * VK_RIGHT
- *
- *
- * java's built in java.util.LinkedList is doubly linked
- */
-
+    private int imgHeight;
+    private int imgWidth;
 
     /**
      * Constructor for this class.
@@ -67,14 +69,24 @@ public class MainWindow {
     public MainWindow() {
         JPanel comicPanel = new JPanel();
         mainFrame = new JFrame("ComicReader");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent winEvent) {
+                cleanup();
+                System.exit(0);
+            }
+        });
+
         // setup menu
         mainMenuBar = new JMenuBar();
         menuFile = new JMenu("File");
         menuFile.setMnemonic(KeyEvent.VK_F);
         currentPage = 1;
         comic = null;
+
+        imgHeight = 0;
+        imgWidth  = 0;
 
         setupOpen();
         setupExit();
@@ -100,17 +112,85 @@ public class MainWindow {
                 pressRight();
             }
         });
-        mainFrame.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent ke) {
-                if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
-                    pressLeft();
-                }
-                if (ke.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    pressRight();
-                }
+        ImageIcon plusIcon = new ImageIcon("icons/plusIcon.png");
+        zoomInButton = new JButton(plusIcon);
+        zoomInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent zoomInEvent) {
+                System.out.println("zoom in button pressed...");
+                zoomIn();
             }
-        }); 
+        });
+        ImageIcon minusIcon = new ImageIcon("icons/minusIcon.png");
+        zoomOutButton = new JButton(minusIcon);
+        zoomOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent zoomOutEvent) {
+                System.out.println("zoom Out button pressed...");
+                zoomOut();
+            }
+        });
     }
+
+    private void zoomIn() {
+        System.out.println("Zoom in");
+        if (comic != null) {
+            JLabel temp = (JLabel)comicPanel.getComponent(0);
+            ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+            Image image = imageIcon.getImage();
+            imgHeight = (int) Math.round(imgHeight * 1.5);
+            imgWidth = (int)  Math.round(imgWidth * 1.5);
+            image = image.getScaledInstance(imgWidth, imgHeight, 0);
+            imageIcon = new ImageIcon(image);
+            JLabel imgLabel = new JLabel(imageIcon);
+            JPanel comicPanel = new JPanel(new BorderLayout());
+            comicPanel.add(imgLabel, BorderLayout.CENTER);
+            updatePanel(comicPanel);
+        }
+    }
+
+    private void addScrollControlls(JScrollPane sPane) {
+        JScrollBar vertical = scrollPane.getVerticalScrollBar();
+        InputMap im = vertical.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
+        im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
+        JScrollBar horizontal = scrollPane.getHorizontalScrollBar();
+        InputMap imh = horizontal.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        imh.put(KeyStroke.getKeyStroke("RIGHT"), "positiveUnitIncrement");
+        imh.put(KeyStroke.getKeyStroke("LEFT"), "negativeUnitIncrement");
+    }
+
+    private void setUpHeightWidth(Image image) {
+        imgHeight = (int) image.getHeight(null);
+        imgWidth  = (int) image.getWidth(null);
+    }
+
+    private void updatePanel(JPanel comicPanel) {
+            scrollPane = new JScrollPane(comicPanel);
+            addScrollControlls(scrollPane);
+            mainFrame.getContentPane().removeAll();
+            mainFrame.getContentPane().add(scrollPane); //comicPanel);
+            mainFrame.validate();
+            scrollPane.requestFocusInWindow();
+    }
+
+    private void zoomOut() {
+        System.out.println("Zoom out");
+        if (comic != null) {
+            JLabel temp = (JLabel)comicPanel.getComponent(0);
+            ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+            Image image = imageIcon.getImage();
+            imgHeight = (int) Math.round(imgHeight / 1.5);
+            imgWidth = (int)  Math.round(imgWidth / 1.5);
+            image = image.getScaledInstance(imgWidth, imgHeight, 0);
+            imageIcon = new ImageIcon(image);
+            JLabel imgLabel = new JLabel(imageIcon);
+            JPanel comicPanel = new JPanel(new BorderLayout());
+            comicPanel.add(imgLabel, BorderLayout.CENTER);
+            updatePanel(comicPanel);
+        }
+    }
+
     private void setupOpen() {                                                  
         menuOpen = new JMenuItem("Open"); // may add icons later                
         menuOpen.setMnemonic(KeyEvent.VK_O);                                    
@@ -126,10 +206,12 @@ public class MainWindow {
                     comic = new UnRar(targetFile);
                     mainFrame.invalidate();
                     comicPanel = comic.getImagePanel(0);
+                    JLabel temp = (JLabel)comicPanel.getComponent(0);
+                    ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+                    Image image = imageIcon.getImage();
+                    setUpHeightWidth(image);
                     currentPage = 0;
-                    mainFrame.getContentPane().removeAll();
-                    mainFrame.getContentPane().add(comicPanel);
-                    mainFrame.validate();
+                    updatePanel(comicPanel);
                 } else {
                     System.out.println("No comic selected this time");
                 }
@@ -145,11 +227,11 @@ public class MainWindow {
                 currentPage = currentPage;
             }
             comicPanel = comic.getImagePanel(currentPage);
-            scrollPane = new JScrollPane(comicPanel);
-            mainFrame.getContentPane().removeAll();
-            mainFrame.getContentPane().add(scrollPane); //comicPanel);
-            mainFrame.validate();
-            
+            updatePanel(comicPanel);
+            JLabel temp = (JLabel)comicPanel.getComponent(0);
+            ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+            Image image = imageIcon.getImage();
+            setUpHeightWidth(image);
         } else {
             System.out.println("right key pressed but no comic selected");
         }
@@ -162,10 +244,11 @@ public class MainWindow {
             } else {
                 currentPage--;
                 comicPanel = comic.getImagePanel(currentPage);
-                scrollPane = new JScrollPane(comicPanel);
-                mainFrame.getContentPane().removeAll();
-                mainFrame.getContentPane().add(scrollPane); //comicPanel);
-                mainFrame.validate();
+                updatePanel(comicPanel);
+                JLabel temp = (JLabel)comicPanel.getComponent(0);
+                ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+                Image image = imageIcon.getImage();
+                setUpHeightWidth(image);
             }
         } else {
             System.out.println("left key pressed but no comic selected");
@@ -181,7 +264,6 @@ public class MainWindow {
             public void actionPerformed(ActionEvent event) {                    
                 cleanup();
                 System.exit(0);                                                 
-                // may need a dialog box before closing or auto save            
             }                                                                   
         });                                                                     
     }
@@ -189,7 +271,6 @@ public class MainWindow {
     private void cleanup() {
         if (comic != null) {
             System.out.println("now removing temporary files");
-            
             for( File file : comic.getImageList()) {
                     System.out.println("removing :: " + file.toString());
                     file.delete();
@@ -236,8 +317,10 @@ public class MainWindow {
         mainMenuBar.add(menuFile);                                              
         mainMenuBar.add(buttonLeft);
         mainMenuBar.add(buttonRight);
-        mainFrame.setJMenuBar(mainMenuBar);
+        mainMenuBar.add(zoomInButton);
+        mainMenuBar.add(zoomOutButton);
         
+        mainFrame.setJMenuBar(mainMenuBar);
         mainFrame.pack();                                                       
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); // max window size   
         mainFrame.setVisible(true);                                             
