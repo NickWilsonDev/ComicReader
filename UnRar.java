@@ -6,32 +6,28 @@
  *
  * This class should enable the program to unrar Rar files.
  */
-import com.github.junrar.*;
+//import com.github.junrar.*;
 
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.io.InputStream;
-import java.io.File;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.impl.FileVolumeManager;
 import com.github.junrar.rarfile.FileHeader;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-//import javax.swing.JScrollPane;
-//import javax.swing.
-import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
-import javax.imageio.ImageIO;
+
+import java.awt.BorderLayout;
 
 public class UnRar {
 
@@ -63,14 +59,11 @@ public class UnRar {
         try {                                                                   
             a = new Archive(new FileVolumeManager(filename));                          
         } catch (RarException e) {                                              
-            // TODO Auto-generated catch block                                  
             e.printStackTrace();                                                
         } catch (IOException e) {                                               
-            // TODO Auto-generated catch block                                  
             e.printStackTrace();                                                
         }                                                                       
         if (a != null) {                                                        
-            //a.getMainHeader().print();                                        
             FileHeader fh = a.nextFileHeader();                                 
             while (fh != null) {                                                
                 try {                                                           
@@ -81,19 +74,15 @@ public class UnRar {
                     a.extractFile(fh, os);                                      
                     os.close();                                                 
                 } catch (FileNotFoundException e) {                             
-                    // TODO Auto-generated catch block                          
                     e.printStackTrace();                                        
                 } catch (RarException e) {                                      
-                    // TODO Auto-generated catch block                          
                     e.printStackTrace();                                        
                 } catch (IOException e) {                                       
-                    // TODO Auto-generated catch block                          
                     e.printStackTrace();                                        
                 }                                                               
                 fh = a.nextFileHeader();                                        
             }                                                                   
         }                                                                       
-        //File f = new File();
         imageFileList = new ArrayList<File>(Arrays.asList(tempDir.listFiles()));
         
         Collections.sort(imageFileList, new Comparator<File>() {
