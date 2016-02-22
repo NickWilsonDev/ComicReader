@@ -19,6 +19,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.DirectoryNotEmptyException;
 
 import java.io.IOException;
+import java.lang.String;
 
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
@@ -30,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -210,7 +212,7 @@ public class MainWindow {
                     currentPage = 0;
                     updatePanel(comicPanel);
                 } else {
-                    System.out.println("No comic selected this time");
+                    System.out.println("No comic selected this time, or Improper file format");
                 }
             }                                                                   
         });                                                                     
@@ -290,9 +292,18 @@ public class MainWindow {
             int returnCode = fileChooser.showOpenDialog(null);                  
             if (returnCode == JFileChooser.APPROVE_OPTION) {                    
                 selectedFile = fileChooser.getSelectedFile();              
-                filename = selectedFile.getName();  
-                System.out.println("isFile():: " + selectedFile.isFile());
-                System.out.println("File Absolute path:: " + selectedFile.getAbsolutePath());
+                filename = selectedFile.getName();
+                String extension = filename.substring(filename.lastIndexOf(".") + 1,
+                                                     filename.length());
+                if (!extension.equalsIgnoreCase("cbr") 
+                                && !extension.equalsIgnoreCase("cbz")) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                        "Comic file must be .CBR or .CBZ.", 
+                        "File type error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+                //System.out.println("isFile():: " + selectedFile.isFile());
+                //System.out.println("File Absolute path:: " + selectedFile.getAbsolutePath());
                 try {
                     System.out.println("File canonical path:: " + selectedFile.getCanonicalPath());
                 } catch (IOException io) {
