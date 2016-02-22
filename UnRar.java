@@ -6,7 +6,6 @@
  *
  * This class should enable the program to unrar Rar files.
  */
-//import com.github.junrar.*;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -91,7 +90,6 @@ public class UnRar {
                 return  file2.toString().compareTo(file1.toString());
             }
         });
-        //imageFileList.remove(0);
         imageFileList.trimToSize();
         printImageFilenameList();
     }
