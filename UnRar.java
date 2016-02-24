@@ -28,7 +28,7 @@ import javax.swing.ImageIcon;
 
 import java.awt.BorderLayout;
 
-public class UnRar {
+public class UnRar implements ComicArchive {
 
         File filename;
         Archive archive = null;

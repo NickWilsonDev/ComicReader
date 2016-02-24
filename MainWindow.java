@@ -56,9 +56,10 @@ public class MainWindow {
 
     protected JScrollPane scrollPane;
     protected JPanel comicPanel = null;
-    protected UnRar comic;
+    protected ComicArchive comic; //UnRar comic;
     private int imgHeight;
     private int imgWidth;
+    private int currentSize;
 
     /**
      * Constructor for this class.
@@ -83,7 +84,7 @@ public class MainWindow {
         menuFile.setMnemonic(KeyEvent.VK_F);
         currentPage = 1;
         comic = null;
-
+        currentSize = 5; // middle ground
         imgHeight = 0;
         imgWidth  = 0;
 
@@ -145,8 +146,28 @@ public class MainWindow {
             JPanel comicPanel = new JPanel(new BorderLayout());
             comicPanel.add(imgLabel, BorderLayout.CENTER);
             updatePanel(comicPanel);
+            currentSize++;
         }
     }
+
+    private void maintainZoomIn() {
+        System.out.println("maintainZoom in");
+        if (comic != null) {
+            JLabel temp = (JLabel)comicPanel.getComponent(0);
+            ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+            Image image = imageIcon.getImage();
+            imgHeight = (int) Math.round(imgHeight * 1.5);
+            imgWidth = (int)  Math.round(imgWidth * 1.5);
+            image = image.getScaledInstance(imgWidth, imgHeight, 0);
+            imageIcon = new ImageIcon(image);
+            JLabel imgLabel = new JLabel(imageIcon);
+            JPanel comicPanel = new JPanel(new BorderLayout());
+            comicPanel.add(imgLabel, BorderLayout.CENTER);
+            updatePanel(comicPanel);
+        }
+    }
+
+
 
     private void addScrollControlls(JScrollPane sPane) {
         JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -187,8 +208,27 @@ public class MainWindow {
             JPanel comicPanel = new JPanel(new BorderLayout());
             comicPanel.add(imgLabel, BorderLayout.CENTER);
             updatePanel(comicPanel);
+            currentSize--;
         }
     }
+
+    private void maintainZoomOut() {
+        System.out.println("maintainZoom out");
+        if (comic != null) {
+            JLabel temp = (JLabel)comicPanel.getComponent(0);
+            ImageIcon imageIcon = (ImageIcon)temp.getIcon();
+            Image image = imageIcon.getImage();
+            imgHeight = (int) Math.round(imgHeight / 1.5);
+            imgWidth = (int)  Math.round(imgWidth / 1.5);
+            image = image.getScaledInstance(imgWidth, imgHeight, 0);
+            imageIcon = new ImageIcon(image);
+            JLabel imgLabel = new JLabel(imageIcon);
+            JPanel comicPanel = new JPanel(new BorderLayout());
+            comicPanel.add(imgLabel, BorderLayout.CENTER);
+            updatePanel(comicPanel);
+        }
+    }
+
 
     private void setupOpen() {                                                  
         menuOpen = new JMenuItem("Open"); // may add icons later                
@@ -200,6 +240,10 @@ public class MainWindow {
                 targetFile = FileNavigator("Open");                       
 
                 if (targetFile != null) {
+                    if (comic != null) {
+                        cleanup();
+                    }
+     
                     System.out.println("Filename:: " + targetFile.getName());
                     // if zip if rar file
                     comic = new UnRar(targetFile);
@@ -211,13 +255,33 @@ public class MainWindow {
                     setUpHeightWidth(image);
                     currentPage = 0;
                     updatePanel(comicPanel);
+                    adjustSize();
                 } else {
                     System.out.println("No comic selected this time, or Improper file format");
                 }
             }                                                                   
         });                                                                     
     }
-    
+   
+   
+    private void adjustSize() {
+        System.out.println("currentSize == " + currentSize);
+            if (currentSize < 5) {
+                int tempCount = 5 - currentSize;
+                while (tempCount < 5) {
+                    maintainZoomOut();
+                    tempCount++;
+                }
+            } else {
+                int tempCount = currentSize - 5;
+                while (tempCount > 5) {
+                    maintainZoomIn();
+                    tempCount--;
+                }
+            }
+    }
+
+         
     private void pressRight() {
         if (comic != null) {
             if (currentPage < comic.getImageList().size() - 1) {
@@ -231,6 +295,7 @@ public class MainWindow {
             ImageIcon imageIcon = (ImageIcon)temp.getIcon();
             Image image = imageIcon.getImage();
             setUpHeightWidth(image);
+            adjustSize();
         } else {
             System.out.println("right key pressed but no comic selected");
         }
@@ -248,6 +313,7 @@ public class MainWindow {
                 ImageIcon imageIcon = (ImageIcon)temp.getIcon();
                 Image image = imageIcon.getImage();
                 setUpHeightWidth(image);
+                adjustSize();
             }
         } else {
             System.out.println("left key pressed but no comic selected");
