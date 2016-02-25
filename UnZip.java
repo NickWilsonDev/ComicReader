@@ -13,53 +13,78 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class UnZip {
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
+import java.awt.BorderLayout;
 
+//import java.util.zip.ZipEntry;
+//import java.util.zip.ZipInputStream;
+
+public class UnZip implements ComicArchive {
+    File tempDir;
+    ArrayList<File> imageFileList = null;
+    
     public UnZip(File targetFile) {
-        try {
-            ZipFile zipFile = new ZipFile(targetFile.getCanonicalPath());
-            Enumeration<?> enu = zipFile.entries();
-            while (enu.hasMoreElements()) {
-                ZipEntry zipEntry = (ZipEntry) enu.nextElement();
+            /// not done
+        //Archive a = null;
+        tempDir = new File("temp");
 
-                String name = zipEntry.getName();
-                long size = zipEntry.getSize();
-                long compressedSize = zipEntry.getCompressedSize();
-                System.out.printf("name: %-20s | size: %6d | compressed size: %6d\n", 
-                        name, size, compressedSize);
-
-                File file = new File(name);
-                if (name.endsWith("/")) {
-                    file.mkdirs();
-                    continue;
-                }
-
-                File parent = file.getParentFile();
-                if (parent != null) {
-                    parent.mkdirs();
-                }
-
-                InputStream is = zipFile.getInputStream(zipEntry);
-                FileOutputStream fos = new FileOutputStream(file);
-                byte[] bytes = new byte[1024];
-                int length;
-                while ((length = is.read(bytes)) >= 0) {
-                    fos.write(bytes, 0, length);
-                }
-                is.close();
-                fos.close();
-
+        if (tempDir.exists()) {
+            System.out.println("temp directory already exists...");
+        } else {
+            System.out.println("Directory does not exist, creating it now");
+            boolean success = tempDir.mkdir();
+            if (success) {
+                System.out.printf("Successfully created new directory : temp");
+            } else {
+                System.out.printf("Failed to create new directory: temp");
             }
-            zipFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-/// not done
+        UnzipUtility unzipper = new UnzipUtility();
+        try {
+            unzipper.unzip(targetFile.getAbsolutePath(), "temp");
+        } catch (Exception ex) {
+            System.out.println("Errors occurred while unzipping archive");
+            ex.printStackTrace();
+        }
+        
+        imageFileList = new ArrayList<File>(Arrays.asList(tempDir.listFiles()));
+
+        Collections.sort(imageFileList, new Comparator<File>() {
+            @Override
+            public int compare(File file2, File file1) {
+                return file2.toString().compareTo(file1.toString());
+            }
+        });
+        imageFileList.trimToSize();
+    }
+
+    public ArrayList<File> getImageList() {
+        return imageFileList;
+    }
+
+    public File getTempDirectory() {
+        return tempDir;
+    }
+
+    public JPanel getImagePanel(int index) {
+        JPanel panel = null;
+        System.out.println("image we are trying for:: " + imageFileList.get(index).toString());
+        JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index).toString()));
+        panel = new JPanel(new BorderLayout());
+        panel.add(imgLabel, BorderLayout.CENTER);
+        return panel;
+    }
 }
+            
 

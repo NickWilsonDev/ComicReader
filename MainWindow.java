@@ -246,7 +246,14 @@ public class MainWindow {
      
                     System.out.println("Filename:: " + targetFile.getName());
                     // if zip if rar file
-                    comic = new UnRar(targetFile);
+                    String filename = targetFile.getName();
+                    String extension = filename.substring(filename.lastIndexOf(".") + 1,
+                                                     filename.length());
+                    if (extension.equalsIgnoreCase("cbr")) { 
+                        comic = new UnRar(targetFile);
+                    } else {
+                        comic = new UnZip(targetFile);
+                    }
                     mainFrame.invalidate();
                     comicPanel = comic.getImagePanel(0);
                     JLabel temp = (JLabel)comicPanel.getComponent(0);
