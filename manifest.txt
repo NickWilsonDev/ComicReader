@@ -1,0 +1,3 @@
+Main-Class: ComicReader
+Class-Path: commons-logging-1.2.jar junrar-0.7.jar
+

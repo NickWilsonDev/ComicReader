@@ -1,0 +1,4 @@
+Manifest-version: 1.0
+Main-Class: ComicReader
+Class-Path: commons-logging-1.2.jar
+

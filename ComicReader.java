@@ -7,11 +7,19 @@
  */
 
 public class ComicReader {
+    
+    /**
+     * Constructor for this class. Helps provide entry point into application.
+     */
     public ComicReader() {
         MainWindow mainWindow = new MainWindow();
         mainWindow.display();
     }
 
+    /**
+     * Main method for application. Creates a ComicReader object and that sets
+     * everything into motion.
+     */
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

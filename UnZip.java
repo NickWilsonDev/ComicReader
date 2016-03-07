@@ -26,17 +26,34 @@ import javax.swing.ImageIcon;
 
 import java.awt.BorderLayout;
 
-//import java.util.zip.ZipEntry;
-//import java.util.zip.ZipInputStream;
-
+/**
+ * @author Nick Wilson
+ * @version 2.25.16
+ *
+ * UnZip.java
+ * This allows the application to work with 'cbz' files.
+ */
 public class UnZip implements ComicArchive {
+    /* A File object that represents the temporary directory where the jpeg
+     * comic images will be stored while the application is running.
+     */
     File tempDir;
+
+    /* A list of File objects, each one represents a jpeg image and each of 
+     * those usually represent a page in the comic
+     */
     ArrayList<File> imageFileList = null;
     
+    /**
+     * The constructor for the class, takes a File parameter that represents
+     * the 'cbz' file that will be unzipped.
+     *
+     * @param
+     *  targetFile - a File object that represents the 'cbz' file that will
+     *               be unzipped
+     */
     public UnZip(File targetFile) {
-            /// not done
-        //Archive a = null;
-        tempDir = new File("temp");
+        tempDir = new File("tempComic");
 
         if (tempDir.exists()) {
             System.out.println("temp directory already exists...");
@@ -52,7 +69,7 @@ public class UnZip implements ComicArchive {
 
         UnzipUtility unzipper = new UnzipUtility();
         try {
-            unzipper.unzip(targetFile.getAbsolutePath(), "temp");
+            unzipper.unzip(targetFile.getAbsolutePath(), tempDir.getAbsolutePath());
         } catch (Exception ex) {
             System.out.println("Errors occurred while unzipping archive");
             ex.printStackTrace();
@@ -69,6 +86,13 @@ public class UnZip implements ComicArchive {
         imageFileList.trimToSize();
     }
 
+    /**
+     * This method returns an ArrayList of File objects that represent all jpeg
+     * images that were unzipped.
+     *
+     * @return
+     *  ArrayList<File> - list of jpeg images
+     */
     public ArrayList<File> getImageList() {
         return imageFileList;
     }

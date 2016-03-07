@@ -94,7 +94,7 @@ public class MainWindow {
     }
 
     private void setupArrows() {
-        ImageIcon leftArrow = new ImageIcon("icons/leftArrow.png");
+        ImageIcon leftArrow = new ImageIcon(getClass().getResource("icons/leftArrow.png"));
         buttonLeft = new JButton(leftArrow);
         buttonLeft.addActionListener(new ActionListener() {
             @Override                                                           
@@ -103,7 +103,7 @@ public class MainWindow {
                 pressLeft();
             }
         });
-        ImageIcon rightArrow = new ImageIcon("icons/rightArrow.png");
+        ImageIcon rightArrow = new ImageIcon(getClass().getResource("icons/rightArrow.png"));
         buttonRight = new JButton(rightArrow);
         buttonRight.addActionListener(new ActionListener() {
             @Override
@@ -112,7 +112,7 @@ public class MainWindow {
                 pressRight();
             }
         });
-        ImageIcon plusIcon = new ImageIcon("icons/plusIcon.png");
+        ImageIcon plusIcon = new ImageIcon(getClass().getResource("icons/plusIcon.png"));
         zoomInButton = new JButton(plusIcon);
         zoomInButton.addActionListener(new ActionListener() {
             @Override
@@ -121,7 +121,7 @@ public class MainWindow {
                 zoomIn();
             }
         });
-        ImageIcon minusIcon = new ImageIcon("icons/minusIcon.png");
+        ImageIcon minusIcon = new ImageIcon(getClass().getResource("icons/minusIcon.png"));
         zoomOutButton = new JButton(minusIcon);
         zoomOutButton.addActionListener(new ActionListener() {
             @Override
@@ -166,8 +166,6 @@ public class MainWindow {
             updatePanel(comicPanel);
         }
     }
-
-
 
     private void addScrollControlls(JScrollPane sPane) {
         JScrollBar vertical = scrollPane.getVerticalScrollBar();
@@ -229,7 +227,6 @@ public class MainWindow {
         }
     }
 
-
     private void setupOpen() {                                                  
         menuOpen = new JMenuItem("Open"); // may add icons later                
         menuOpen.setMnemonic(KeyEvent.VK_O);                                    
@@ -244,7 +241,6 @@ public class MainWindow {
                         cleanup();
                     }
      
-                    System.out.println("Filename:: " + targetFile.getName());
                     // if zip if rar file
                     String filename = targetFile.getName();
                     String extension = filename.substring(filename.lastIndexOf(".") + 1,
@@ -254,6 +250,7 @@ public class MainWindow {
                     } else {
                         comic = new UnZip(targetFile);
                     }
+                    currentSize = 5;
                     mainFrame.invalidate();
                     comicPanel = comic.getImagePanel(0);
                     JLabel temp = (JLabel)comicPanel.getComponent(0);
@@ -287,7 +284,6 @@ public class MainWindow {
                 }
             }
     }
-
          
     private void pressRight() {
         if (comic != null) {
@@ -326,8 +322,11 @@ public class MainWindow {
             System.out.println("left key pressed but no comic selected");
         }
     }
-         
 
+    /**
+     * Method sets up Exit option for the menu, and adds an action listener to
+     * it.
+     */
     private void setupExit() {                                                  
         menuExit = new JMenuItem("Exit");                                       
         menuExit.setMnemonic(KeyEvent.VK_X);                                    
@@ -340,6 +339,10 @@ public class MainWindow {
         });                                                                     
     }
 
+    /**
+     * Method cleans up 'temp' files that were extracted from the selected
+     * comic archive.
+     */
     private void cleanup() {
         if (comic != null) {
             System.out.println("now removing temporary files");
@@ -353,7 +356,6 @@ public class MainWindow {
                 dir.delete();
         }
     }
-
 
     private File FileNavigator(String option) {                               
         String filename = "";                                                   
@@ -375,8 +377,6 @@ public class MainWindow {
                         "File type error", JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
-                //System.out.println("isFile():: " + selectedFile.isFile());
-                //System.out.println("File Absolute path:: " + selectedFile.getAbsolutePath());
                 try {
                     System.out.println("File canonical path:: " + selectedFile.getCanonicalPath());
                 } catch (IOException io) {

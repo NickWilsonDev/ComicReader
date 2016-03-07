@@ -39,7 +39,7 @@ public class UnRar implements ComicArchive {
     public UnRar(File targetFile) {
 
         filename = targetFile;
-        tempDir = new File("temp");                                        
+        tempDir = new File("tempComic");                                        
         Archive a = null;                                                       
                                                                                 
         // directory stuff                                                      
