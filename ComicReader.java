@@ -7,9 +7,9 @@
  */
 
 public class ComicReader {
-    
+
     /**
-     * Constructor for this class. Helps provide entry point into application.
+     * Constructor for this class. Provides an entry point into the application.
      */
     public ComicReader() {
         MainWindow mainWindow = new MainWindow();

@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.io.File;
 
-
 import java.nio.file.NoSuchFileException;
 import java.nio.file.DirectoryNotEmptyException;
 
@@ -52,6 +51,7 @@ public class MainWindow {
 
     private JMenuItem menuOpen;
     private JMenuItem menuExit;
+    private JMenuItem menuAbout;
     private int currentPage;
 
     protected JScrollPane scrollPane;
@@ -90,43 +90,52 @@ public class MainWindow {
 
         setupOpen();
         setupExit();
-        setupArrows();
+        setupAbout();
+        setupButtons(); //setupArrows();
     }
 
-    private void setupArrows() {
-        ImageIcon leftArrow = new ImageIcon(getClass().getResource("icons/leftArrow.png"));
+    /**
+     * Method adds ActionEvent listeners to the appropriate arrow buttons and the
+     * zoom in and out buttons.
+     */
+    private void setupButtons() { //setupArrows() {
+        ImageIcon leftArrow = new ImageIcon(getClass()
+                                            .getResource("icons/leftArrow.png"));
         buttonLeft = new JButton(leftArrow);
         buttonLeft.addActionListener(new ActionListener() {
-            @Override                                                           
-            public void actionPerformed(ActionEvent leftEvent) {   
-                System.out.println("menu left pressed...");
+            @Override
+            public void actionPerformed(ActionEvent leftEvent) {
+                //System.out.println("menu left pressed...");
                 pressLeft();
             }
         });
-        ImageIcon rightArrow = new ImageIcon(getClass().getResource("icons/rightArrow.png"));
+        ImageIcon rightArrow = new ImageIcon(getClass()
+                                            .getResource("icons/rightArrow.png"));
         buttonRight = new JButton(rightArrow);
         buttonRight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent rightEvent) {
-                System.out.println("menu right pressed...");
+                //System.out.println("menu right pressed...");
                 pressRight();
             }
         });
-        ImageIcon plusIcon = new ImageIcon(getClass().getResource("icons/plusIcon.png"));
+        ImageIcon plusIcon = new ImageIcon(getClass()
+                                              .getResource("icons/plusIcon.png"));
         zoomInButton = new JButton(plusIcon);
         zoomInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent zoomInEvent) {
-                System.out.println("zoom in button pressed...");
+                //System.out.println("zoom in button pressed...");
                 zoomIn();
             }
         });
-        ImageIcon minusIcon = new ImageIcon(getClass().getResource("icons/minusIcon.png"));
+        ImageIcon minusIcon = new ImageIcon(getClass()
+                                            .getResource("icons/minusIcon.png"));
         zoomOutButton = new JButton(minusIcon);
         zoomOutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent zoomOutEvent) {
-                System.out.println("zoom Out button pressed...");
+                //System.out.println("zoom Out button pressed...");
                 zoomOut();
             }
         });
@@ -227,14 +236,14 @@ public class MainWindow {
         }
     }
 
-    private void setupOpen() {                                                  
-        menuOpen = new JMenuItem("Open"); // may add icons later                
-        menuOpen.setMnemonic(KeyEvent.VK_O);                                    
-        menuOpen.addActionListener(new ActionListener() {                       
-            @Override                                                           
-            public void actionPerformed(ActionEvent saveEvent) {                
+    private void setupOpen() {
+        menuOpen = new JMenuItem("Open"); // may add icons later
+        menuOpen.setMnemonic(KeyEvent.VK_O);
+        menuOpen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent saveEvent) {
                 File targetFile = null;
-                targetFile = FileNavigator("Open");                       
+                targetFile = FileNavigator("Open");
 
                 if (targetFile != null) {
                     if (comic != null) {
@@ -243,8 +252,8 @@ public class MainWindow {
      
                     // if zip if rar file
                     String filename = targetFile.getName();
-                    String extension = filename.substring(filename.lastIndexOf(".") + 1,
-                                                     filename.length());
+                    String extension = filename.substring(filename
+                                        .lastIndexOf(".") + 1, filename.length());
                     if (extension.equalsIgnoreCase("cbr")) { 
                         comic = new UnRar(targetFile);
                     } else {
@@ -261,13 +270,14 @@ public class MainWindow {
                     updatePanel(comicPanel);
                     adjustSize();
                 } else {
-                    System.out.println("No comic selected this time, or Improper file format");
+                    System.out.println("No comic selected this time, "
+                                        + "or Improper file format");
                 }
-            }                                                                   
-        });                                                                     
+            }
+        });
     }
-   
-   
+
+
     private void adjustSize() {
         System.out.println("currentSize == " + currentSize);
             if (currentSize < 5) {
@@ -284,7 +294,7 @@ public class MainWindow {
                 }
             }
     }
-         
+
     private void pressRight() {
         if (comic != null) {
             if (currentPage < comic.getImageList().size() - 1) {
@@ -327,16 +337,27 @@ public class MainWindow {
      * Method sets up Exit option for the menu, and adds an action listener to
      * it.
      */
-    private void setupExit() {                                                  
-        menuExit = new JMenuItem("Exit");                                       
-        menuExit.setMnemonic(KeyEvent.VK_X);                                    
-        menuExit.addActionListener(new ActionListener() {                       
-            @Override                                                           
-            public void actionPerformed(ActionEvent event) {                    
+    private void setupExit() {
+        menuExit = new JMenuItem("Exit");
+        menuExit.setMnemonic(KeyEvent.VK_X);
+        menuExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
                 cleanup();
-                System.exit(0);                                                 
-            }                                                                   
-        });                                                                     
+                System.exit(0);
+            }
+        });
+    }
+
+    private void setupAbout() {
+        menuAbout = new JMenuItem("About");
+        menuAbout.setMnemonic(KeyEvent.VK_A);
+        menuAbout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JOptionPane.showMessageDialog(null,"About\n Author Nick");
+            }
+        });
     }
 
     /**
@@ -357,19 +378,19 @@ public class MainWindow {
         }
     }
 
-    private File FileNavigator(String option) {                               
-        String filename = "";                                                   
+    private File FileNavigator(String option) {
+        String filename = "";
         File selectedFile = null;
-        JFileChooser fileChooser;                                               
-        fileChooser = new JFileChooser();                                       
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);   
-        if (option.equals("Open")) {                                            
-            int returnCode = fileChooser.showOpenDialog(null);                  
-            if (returnCode == JFileChooser.APPROVE_OPTION) {                    
-                selectedFile = fileChooser.getSelectedFile();              
+        JFileChooser fileChooser;
+        fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        if (option.equals("Open")) {
+            int returnCode = fileChooser.showOpenDialog(null);
+            if (returnCode == JFileChooser.APPROVE_OPTION) {
+                selectedFile = fileChooser.getSelectedFile();
                 filename = selectedFile.getName();
-                String extension = filename.substring(filename.lastIndexOf(".") + 1,
-                                                     filename.length());
+                String extension = filename.substring(filename.lastIndexOf(".")
+                                                        + 1, filename.length());
                 if (!extension.equalsIgnoreCase("cbr") 
                                 && !extension.equalsIgnoreCase("cbz")) {
                     JOptionPane.showMessageDialog(mainFrame,
@@ -378,32 +399,39 @@ public class MainWindow {
                     return null;
                 }
                 try {
-                    System.out.println("File canonical path:: " + selectedFile.getCanonicalPath());
+                    System.out.println("File canonical path:: "
+                                        + selectedFile.getCanonicalPath());
                 } catch (IOException io) {
                     System.out.println("IOException in FileNavigator method");
                 }
-                System.out.println("File Path:: " + selectedFile.getPath());                            
-                System.out.println("FileNavigator selected filename: " + filename);                                   
-            }                                                                   
-        } else {                                                                
-            fileChooser.showDialog(null, "Save");                               
-        }                                                                       
-        return selectedFile;                                                      
-    }                                                                           
-                                                                                
-    public void display() {                                                     
-        menuFile.add(menuOpen);                                                 
+                System.out.println("File Path:: "
+                                    + selectedFile.getPath());
+                System.out.println("FileNavigator selected filename: "
+                                    + filename);
+                }
+        } else {
+            fileChooser.showDialog(null, "Save");
+        }
+        return selectedFile;
+    }
+
+    /**
+     * This method basically sets up the UI, adding navigation components ect.
+     */
+    public void display() {
+        menuFile.add(menuOpen);
+        menuFile.add(menuAbout);
         menuFile.add(menuExit);
-                                                                                
-        mainMenuBar.add(menuFile);                                              
+
+        mainMenuBar.add(menuFile);
         mainMenuBar.add(buttonLeft);
         mainMenuBar.add(buttonRight);
         mainMenuBar.add(zoomInButton);
         mainMenuBar.add(zoomOutButton);
-        
+
         mainFrame.setJMenuBar(mainMenuBar);
-        mainFrame.pack();                                                       
-        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); // max window size   
-        mainFrame.setVisible(true);                                             
-    }        
-}      
+        mainFrame.pack();
+        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); // max window size
+        mainFrame.setVisible(true);
+    }
+}

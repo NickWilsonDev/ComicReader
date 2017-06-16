@@ -7,6 +7,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+/**
+ * @Author Nick Wilson
+ *
+ * This class is just to get a jpg file to display inside a JLabel, nothing
+ * special just proof of concept.
+ */
 public class TestImages {
 
    // *** your image path will be different *****

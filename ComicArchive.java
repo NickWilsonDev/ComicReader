@@ -4,7 +4,8 @@
  *
  * ComicArchive.java
  *
- * An Archive that will either be a zip file or a rar file.
+ * This interface helps model an archive that will either be a zip file or a rar
+ * file. Since these comic book files only come in either cbr or cbz formats.
  */
 
 import java.util.ArrayList;
@@ -22,5 +23,4 @@ public interface ComicArchive {
 
     public File getTempDirectory();
     // may add other methods later
-
 }

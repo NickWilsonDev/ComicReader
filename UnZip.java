@@ -4,7 +4,8 @@
  *
  * UnZip.java
  *
- * This class should enable unzipping files.
+ * This class should enable unzipping files. It is used for when the application
+ * is opening 'cbz' files.
  * Copied and modified from this site.
  * http://www.avajava.com/tutorials/lessons/how-do-i-unzip-the-contents-of-a-zip-file.html
  */
@@ -69,12 +70,13 @@ public class UnZip implements ComicArchive {
 
         UnzipUtility unzipper = new UnzipUtility();
         try {
-            unzipper.unzip(targetFile.getAbsolutePath(), tempDir.getAbsolutePath());
+            unzipper.unzip(targetFile.getAbsolutePath(),
+                                                tempDir.getAbsolutePath());
         } catch (Exception ex) {
             System.out.println("Errors occurred while unzipping archive");
             ex.printStackTrace();
         }
-        
+
         imageFileList = new ArrayList<File>(Arrays.asList(tempDir.listFiles()));
 
         Collections.sort(imageFileList, new Comparator<File>() {
@@ -97,18 +99,25 @@ public class UnZip implements ComicArchive {
         return imageFileList;
     }
 
+    /**
+     * Simple getter method - returns the temp directory that the jpg files will
+     * be stored in while the user is using the application.
+     */
     public File getTempDirectory() {
         return tempDir;
     }
 
+    /**
+     * Method creates and returns a JPanel that user will be currently looking at.
+     */
     public JPanel getImagePanel(int index) {
         JPanel panel = null;
-        System.out.println("image we are trying for:: " + imageFileList.get(index).toString());
-        JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index).toString()));
+        System.out.println("image we are trying for:: "
+                                        + imageFileList.get(index).toString());
+        JLabel imgLabel = new JLabel(new ImageIcon(imageFileList.get(index)
+                                                                    .toString()));
         panel = new JPanel(new BorderLayout());
         panel.add(imgLabel, BorderLayout.CENTER);
         return panel;
     }
 }
-            
-
