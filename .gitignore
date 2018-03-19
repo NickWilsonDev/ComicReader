@@ -1,4 +1,3 @@
 *.class
 ./com/github/junrar/*.class
-./com/github/junrar/rarfile/*.class
-./com/github/junrar/unpack/*.class
+./com/github/junrar/**/*.class
