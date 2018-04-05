@@ -2,6 +2,14 @@
 
 ![alt text](./Infinity-Gauntlet-by-Jim-Starlin.jpeg)
 
+
+## How to make sure Java is installed
+```console
+foo@bar:~$ java -version
+foo@bar:~$ javac -version
+```
+Both should return the version number, if not they will need to be installed.
+
 ## Execution
 ```console
 foo@bar:~$ javac -cp "commons-logging-1.2.jar:junrar-0.7.jar:." *.java
