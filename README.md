@@ -1,7 +1,8 @@
 # ComicReader
 
-![alt text](./Infinity-Gauntlet-by-Jim-Starlin.jpeg)
-
+<p align="center">
+    <img width="460" height="360" src="./Infinity-Gauntlet-by-Jim-Starlin.jpeg">
+</p>
 
 ## How to make sure Java is installed
 ```console
