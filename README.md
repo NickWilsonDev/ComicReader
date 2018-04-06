@@ -1,7 +1,7 @@
 # ComicReader
 
 <p align="center">
-    <img width="460" height="300" src="./Infinity-Gauntlet-by-Jim-Starlin.jpeg">
+    <img width="560" height="300" src="./Infinity-Gauntlet-by-Jim-Starlin.jpeg">
 </p>
 
 ## How to make sure Java is installed
