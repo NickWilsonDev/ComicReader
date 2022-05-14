@@ -1,3 +1,5 @@
 *.class
+./com/**/*.class
 ./com/github/junrar/*.class
 ./com/github/junrar/**/*.class
+*.swp
